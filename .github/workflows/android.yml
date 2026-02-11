@@ -27,23 +27,35 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Grant Permission
+      - name: Grant Execute Permission
         run: chmod +x ./gradlew
 
+      - name: Clean Project
+        run: ./gradlew clean
+
       - name: Build Release APK
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Show Generated APK Files
+        run: find . -name "*.apk"
 
       - name: Create Release Folder
         run: mkdir -p release
 
-      - name: Copy APK to Release Folder
+      - name: Copy APK To Release Folder
         run: |
-          find . -name "*release*.apk" -exec cp {} release/app-release.apk \;
+          APK_PATH=$(find . -name "*release*.apk" | head -n 1)
+          if [ -z "$APK_PATH" ]; then
+            echo "No release APK found!"
+            exit 1
+          fi
+          cp "$APK_PATH" release/app-release.apk
+          echo "APK copied from $APK_PATH"
 
-      - name: Commit APK to Repo
+      - name: Commit APK To Repo
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add release/app-release.apk
-          git commit -m "Auto build release APK"
+          git commit -m "Auto build release APK" || echo "No changes to commit"
           git push
