@@ -1,4 +1,4 @@
-name: Build And Save Release APK
+name: Build Android APK
 
 on:
   push:
@@ -6,15 +6,12 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Java 17
@@ -27,35 +24,23 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Show Project Structure
+        run: ls -R
+
       - name: Grant Execute Permission
         run: chmod +x ./gradlew
 
       - name: Clean Project
-        run: ./gradlew clean
+        run: ./gradlew clean --no-daemon
 
-      - name: Build Release APK
-        run: ./gradlew assembleRelease --no-daemon --stacktrace
+      - name: Build All Variants
+        run: ./gradlew assemble --no-daemon --stacktrace
 
       - name: Show Generated APK Files
-        run: find . -name "*.apk"
+        run: find . -name "*.apk" || echo "No APK found"
 
-      - name: Create Release Folder
-        run: mkdir -p release
-
-      - name: Copy APK To Release Folder
-        run: |
-          APK_PATH=$(find . -name "*release*.apk" | head -n 1)
-          if [ -z "$APK_PATH" ]; then
-            echo "No release APK found!"
-            exit 1
-          fi
-          cp "$APK_PATH" release/app-release.apk
-          echo "APK copied from $APK_PATH"
-
-      - name: Commit APK To Repo
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add release/app-release.apk
-          git commit -m "Auto build release APK" || echo "No changes to commit"
-          git push
+      - name: Upload Any APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-apk
+          path: '**/*.apk'
