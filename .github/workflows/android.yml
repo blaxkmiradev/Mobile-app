@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build And Save Release APK
 
 on:
   push:
@@ -6,9 +6,11 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
-    name: Build Release APK
     runs-on: ubuntu-latest
 
     steps:
@@ -25,20 +27,23 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Verify gradlew exists
-        run: ls -la
-
-      - name: Grant Execute Permission
+      - name: Grant Permission
         run: chmod +x ./gradlew
 
-      - name: Clean Project
-        run: ./gradlew clean
-
       - name: Build Release APK
-        run: ./gradlew assembleRelease --no-daemon --stacktrace
+        run: ./gradlew assembleRelease --no-daemon
 
-      - name: Upload Release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-apk
-          path: app/build/outputs/apk/release/*Mira.apk
+      - name: Create Release Folder
+        run: mkdir -p release
+
+      - name: Copy APK to Release Folder
+        run: |
+          find . -name "*release*.apk" -exec cp {} release/app-release.apk \;
+
+      - name: Commit APK to Repo
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add release/app-release.apk
+          git commit -m "Auto build release APK"
+          git push
