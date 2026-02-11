@@ -1,0 +1,6 @@
+
+{
+  "name": "Notedpad",
+  "description": "A high-performance Material 3 inspired note-taking application featuring persistent storage, real-time search, and a clean responsive interface.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,30 @@
+
+{
+  "project_name": "Notedpad",
+  "platform": "Android",
+  "workflow": {
+    "trigger": "push",
+    "branches": ["main"],
+    "steps": [
+      {
+        "name": "environment_setup",
+        "jdk": "17",
+        "distribution": "temurin"
+      },
+      {
+        "name": "build_command",
+        "command": "./gradlew assembleDebug",
+        "output_path": "app/build/outputs/apk/debug/app-debug.apk"
+      },
+      {
+        "name": "artifact_upload",
+        "retention_days": 7
+      }
+    ]
+  },
+  "metadata": {
+    "package_name": "com.notedpad",
+    "min_sdk": 24,
+    "target_sdk": 34
+  }
+}

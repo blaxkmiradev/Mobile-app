@@ -1,0 +1,23 @@
+
+{
+  "name": "notedpad-simulator",
+  "version": "1.0.0",
+  "description": "Material 3 Note-taking app simulator",
+  "main": "index.tsx",
+  "scripts": {
+    "start": "servor . index.html --reload",
+    "build:web": "echo 'Building web simulator...'",
+    "build:android": "./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "lucide-react": "^0.300.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.3.3",
+    "tailwindcss": "^3.4.1"
+  }
+}

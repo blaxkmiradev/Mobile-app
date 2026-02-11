@@ -1,0 +1,18 @@
+
+{
+  "short_name": "Notedpad",
+  "name": "Notedpad: Material 3 Notes",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/564/564445.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#fef7ff",
+  "background_color": "#fef7ff",
+  "orientation": "portrait"
+}
